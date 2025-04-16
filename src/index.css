@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html {
+  background: #1A1A1A;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+
+}
+
+#root {
+  overflow: scroll;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+/*By Default all browser have url navbar*/
+@media (max-height: 780px) {
+  .customHeightApp {
+    height: 60vh !important;
+  }
+
+  #root {
+    padding-bottom: 120px;
+  }
+
+}
+
+input,
+textarea {
+  @apply w-full bg-customBlack-200 border border-gray-500 rounded-lg py-2 pl-10 pr-4 text-white placeholder-gray-300 focus:border-green-950 focus:outline-none;
+}
+
+
+button:focus {
+  @apply outline-none ring-2 ring-green-200;
+}
+
+
+/* Estilos para los encabezados h1, h2, h3, etc. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-serif font-bold text-gray-100 tracking-wide leading-tight;
+}
+
+h1 {
+  @apply text-4xl mt-6 mb-4;
+}
+
+h2 {
+  @apply text-3xl mt-5 mb-3;
+}
+
+h3 {
+  @apply text-2xl mt-4 mb-3;
+}
+
+h3 span {
+  @apply font-semibold;
+}
+
+h4 {
+  @apply text-xl mt-4 mb-2;
+}
+
+h5 {
+  @apply text-lg mt-3 mb-1;
+}
+
+h6 {
+  @apply text-base mt-2 mb-1;
+}
+
+/* Estilos para los párrafos */
+p {
+  @apply font-serif text-lg text-gray-200 leading-relaxed mt-4 mb-6;
+  text-align: justify;
+  hyphens: auto;
+  /* Permitir división de palabras para mejor legibilidad */
+}
+
+/* Estilos para listas ordenadas (ol) y no ordenadas (ul) */
+ol,
+ul {
+  @apply font-serif text-gray-200 text-lg leading-relaxed mt-4 mb-6;
+  list-style-position: outside;
+  /* Mantener la numeración o viñetas alineadas con el contenido */
+  padding-left: 1.5rem;
+  /* Espaciado de indentación para una lectura clara */
+}
+
+/* Estilos específicos para listas ordenadas (ol) */
+ol {
+  list-style-type: decimal;
+  /* Usar numeración */
+}
+
+/* Estilos específicos para listas no ordenadas (ul) */
+ul {
+  list-style-type: disc;
+  /* Usar viñetas circulares */
+}
+
+/* Estilos para los elementos de lista (li) */
+li {
+  @apply mb-2;
+  text-indent: -1.5rem;
+  /* Para mantener el texto alineado con el inicio de los números o viñetas */
+  padding-left: 1.5rem;
+  /* Para un pequeño margen visual */
+}
+
+/* Estilos para bloques de cita (blockquote) */
+blockquote {
+  @apply font-serif text-gray-400 italic border-l-4 border-gray-500 pl-4 my-4;
+}
+
+/* Estilos para imágenes */
+img {
+  @apply my-4 max-w-full h-auto;
+  /* Asegurar que las imágenes sean responsivas */
+}
+
+/* Estilos para códigos embebidos (inline code) */
+code {
+  @apply bg-gray-800 text-gray-200 rounded px-1 py-0.5;
+}
+
+label {
+  font-size: 0.875rem;
+  /* Texto más compacto */
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+  transition: transform 0.5s;
+}
