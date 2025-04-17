@@ -1,41 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  ChevronLeft,
-  Timer,
-  BookOpen,
-} from "lucide-react";
+import { ChevronLeft, Timer, BookOpen } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 
 import { useCustomMarkdownRenderer } from "./procesatorMarkdown";
-import { BACKURL } from "../../../api/backConf";
 import { SidePanelModalWord } from "./SidePanelModalWord";
 import { Lecture } from "../../../models/Lecture";
-
-// LecturaPage.tsx (actualizado)
+import { useLectureStore } from "../../../store/useLectureStore";
 
 export const LecturaPage = () => {
   const [lecture, setLecture] = useState<Lecture>();
-  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const { customComponents, wordSelected } = useCustomMarkdownRenderer();
-
   const { id } = useParams<{ id: string }>();
 
-  const getLecture = async () => {
-    try {
-      const response = await fetch(`${BACKURL}/api/lectures/${id}`);
-      const data: Lecture = await response.json();
-      setLecture(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { getLectureById, activeLecture } = useLectureStore();
 
   useEffect(() => {
-    getLecture();
-  }, []);
+    const fetchLecture = async () => {
+      await getLectureById(id!);
+      setLecture(activeLecture!);
+    };
+    fetchLecture();
+  }, [id, getLectureById]);
 
   return (
     <div className="bg-gradient-to-b px-4 pt-2 pb-4 from-black-800 via-customGreen-100 to-customBlack-100 text-black-200 min-h-screen flex flex-col">
@@ -83,7 +71,7 @@ export const LecturaPage = () => {
                 : "https://avatars.githubusercontent.com/u/6078720?s=200&v=4"
             }
             alt="NPM Logo"
-            className="w-48 h-48 object-cover float-left mr-4 mb-2 rounded-lg"
+            className="w-80 h-80 object-cover float-left mr-4 mb-2 rounded-lg"
           />
           <div>
             <ReactMarkdown
@@ -96,33 +84,9 @@ export const LecturaPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Barra de progreso */}
-      {/* <div className="mb-4">
-        <div className="h-1 w-full bg-gray-700 rounded-full">
-          <div className="h-1 bg-gray-500 rounded-full"></div>
-        </div>
-      </div> */}
-
-      {/* Controles de reproducción */}
-      {/* <div className="flex justify-center items-center space-x-4">
-        <button className={`p-2 opacity-50 cursor-not-allowed`}>
-          <SkipBack className="w-6 h-6" />
-        </button>
-        <button
-          className="p-2 bg-green-800 rounded-full"
-          onClick={() => setIsPlaying(!isPlaying)}
-        >
-          {isPlaying ? (
-            <Pause className="w-6 h-6 text-black" />
-          ) : (
-            <Play className="w-6 h-6 text-black" />
-          )}
-        </button>
-        <button className={`p-2`}>
-          <SkipForward className="w-6 h-6" />
-        </button>
-      </div> */}
+      <div>
+        <section className="bg-red-100">HOLA</section>
+      </div>
 
       {/* Panel lateral */}
       <SidePanelModalWord

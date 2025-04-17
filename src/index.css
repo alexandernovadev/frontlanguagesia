@@ -19,6 +19,14 @@ html {
   margin: 0 auto;
 }
 
+.charm-regular {
+  font-family: "Eagle Lake", serif;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: capitalize;
+}
+
+
 /*By Default all browser have url navbar*/
 @media (max-height: 780px) {
   .customHeightApp {
