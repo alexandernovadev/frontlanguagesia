@@ -1,5 +1,7 @@
 #!/bin/bash
-set -e  # Detener el script si hay un error
+set -euo pipefail  # 💥 Detiene en errores, variables no definidas y fallos en pipes
+
+trap 'echo "❌ Error en la línea $LINENO. Abortando despliegue." >&2' ERR
 
 # Verificar si Yarn está instalado
 if ! command -v yarn &> /dev/null; then
@@ -10,7 +12,7 @@ fi
 # Hacer un hard reset de Git para evitar cambios no deseados
 echo "🔄 Restaurando la rama a su estado original..."
 git reset --hard
-git clean -fd  # Elimina archivos no versionados
+git clean -fd
 
 # Obtener versión desde package.json y formatear la fecha
 PACKAGE_VERSION=$(jq -r .version package.json)
@@ -18,7 +20,7 @@ DATE_FORMAT=$(TZ="America/Bogota" date +"Date 1 %B %d(%A) ⏰ %I:%M:%S %p - %Y 1
 
 # Sobrescribir VITE_VERSION en .env
 echo "✍️  Actualizando VITE_VERSION en .env..."
-sed -i "s/^VITE_VERSION=.*/VITE_VERSION=\"$DATE_FORMAT\"/" .env
+sed -i "s/^VITE_VERSION=.*/VITE_VERSION=\"$DATE_FORMAT\"/" .env || echo "⚠️ .env no contiene VITE_VERSION. Asegúrate de tenerlo definido."
 
 # Eliminar archivos que puedan causar conflictos
 echo "🧹 Eliminando node_modules y lock files..."
@@ -26,7 +28,7 @@ rm -rf node_modules package-lock.json yarn.lock
 
 # Instalar dependencias
 echo "📦 Instalando dependencias..."
-yarn install
+yarn install --frozen-lockfile
 
 # Construir el proyecto
 echo "⚙️  Generando build de producción..."
