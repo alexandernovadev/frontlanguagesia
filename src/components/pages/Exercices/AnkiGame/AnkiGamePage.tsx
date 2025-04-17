@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Card } from "./Card";
 import { CardNavigation } from "./CardNavigation";
 import { useWordStore } from "../../../../store/useWordStore";
-import { MainLayout } from "../../../shared/Layouts/MainLayout";
 import { Loading } from "../../Words/Loading";
 
 export const AnkiGamePage = () => {
