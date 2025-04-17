@@ -27,6 +27,7 @@ jobs:
             echo "✅ Validating SSH connection..."
 
             # Init agent SSH  add key password
+            
             cd /root/.ssh
             eval "$(ssh-agent -s)"
             ssh-add github-actions
