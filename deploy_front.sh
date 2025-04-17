@@ -7,9 +7,6 @@ if ! command -v yarn &> /dev/null; then
     exit 1
 fi
 
-# Navegar al directorio del frontend
-cd "$(dirname "$0")/front"
-
 # Hacer un hard reset de Git para evitar cambios no deseados
 echo "🔄 Restaurando la rama a su estado original..."
 git reset --hard

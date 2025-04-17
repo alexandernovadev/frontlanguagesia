@@ -1,0 +1,45 @@
+name: 🚀 Deploy front to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: 🔐 SSH & Deploy to Server FRont
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔑 Setup SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: 🚀 Deploy
+        run: |
+          echo "Deploying to server..."
+          ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            echo " 📦 running deploy scriptNova front ..."
+            echo "✅ Validating SSH connection..."
+
+            # Init agent SSH  add key password
+            cd /root/.ssh
+            eval "$(ssh-agent -s)"
+            ssh-add github-actions
+
+            echo "✅ SSH connection validated."
+            echo "🚀 Deploying to server..."
+
+            # Navigate to the application directory and run the deployment script
+            cd /root/novalabs/frontlanguagesia
+            git pull origin main
+
+            echo "✅ Pulling latest changes from main branch."
+            # Ejecutar el script de despliegue
+            bash /root/novalabs/frontlanguagesia/deploy_front.sh
+            echo "✅ Deployment completed."
+          EOF
