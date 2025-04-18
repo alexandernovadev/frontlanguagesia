@@ -4,8 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { AuthProvider } from "../context/AuthContext";
+import ProtectedRoute from "./ProtectedRoute";
+import LoginPage from "../components/pages/Login/LoginPage";
 import HomePage from "../components/pages/Home/HomePage";
-import { WordPage } from "../components/pages/Words/WordPage";
 import { GeneratorPage } from "../components/pages/Generator/GeneratorPage";
 import { LecturaPage } from "../components/pages/Lecture/LecturaPage";
 import { Statistics } from "../components/pages/Statistics/Statistics";
@@ -13,26 +15,77 @@ import { ProfilePage } from "../components/pages/Profile/ProfilePage";
 import { AnkiGamePage } from "../components/pages/Exercices/AnkiGame/AnkiGamePage";
 import { IrregularVerbsGame } from "../components/pages/Exercices/IrregularVerbs/IrregularVerbsGame";
 import { ExercisesLayout } from "../components/pages/Exercices/ExercisesLayout";
+import { WordPage } from "../components/pages/Words/WordPage";
 
 const RouterP = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/words" element={<WordPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/generator" element={<GeneratorPage />} />
-        <Route path="/statistics" element={<Statistics />} />
-        <Route path="/lecture/:id" element={<LecturaPage />} />
-
-        <Route path="/exercises" element={<ExercisesLayout />}>
-          <Route path="anki" element={<AnkiGamePage />} />
-          <Route path="irregular-verbs" element={<IrregularVerbsGame />} />
-        </Route>
-
-        <Route path="*" element={<Navigate to="/?sequo vs=true" replace />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/words"
+            element={
+              <ProtectedRoute>
+                <WordPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/generator"
+            element={
+              <ProtectedRoute>
+                <GeneratorPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/statistics"
+            element={
+              <ProtectedRoute>
+                <Statistics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/lecture/:id"
+            element={
+              <ProtectedRoute>
+                <LecturaPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercises"
+            element={
+              <ProtectedRoute>
+                <ExercisesLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="anki" element={<AnkiGamePage />} />
+            <Route path="irregular-verbs" element={<IrregularVerbsGame />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
