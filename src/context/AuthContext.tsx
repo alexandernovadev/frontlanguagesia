@@ -18,10 +18,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (token: string) => {
     localStorage.setItem("token", token);
     setIsAuthenticated(true);
+    location.href = "/";
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("token");    
+    location.href = "/login";
     setIsAuthenticated(false);
   };
 

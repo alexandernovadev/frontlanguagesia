@@ -1,10 +1,13 @@
 import { MainLayout } from "../../shared/Layouts/MainLayout";
 import { version } from "../../../../package.json";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 export const VERSION =
   import.meta.env.VITE_VERSION || "V. March 8 2025 4:40 PM";
 
 export const ProfilePage = () => {
+  const { logout } = useContext(AuthContext);
   return (
     <MainLayout>
       <section className="px-12 py-8rounded-lg max-w-md mx-auto">
@@ -32,6 +35,10 @@ export const ProfilePage = () => {
         </h3>
         <p className="text-lg text-gray-200">{VERSION}</p>
         <p className="text-lg text-gray-200">V pj: {version}</p>
+
+        <button className="bg-red-400 p-2 border rounded-lg" onClick={logout}>
+          LogOut
+        </button>
       </section>
     </MainLayout>
   );

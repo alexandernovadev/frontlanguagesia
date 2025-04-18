@@ -6,24 +6,29 @@ import rehypeRaw from "rehype-raw";
 
 import { useCustomMarkdownRenderer } from "./procesatorMarkdown";
 import { SidePanelModalWord } from "./SidePanelModalWord";
-import { Lecture } from "../../../models/Lecture";
 import { useLectureStore } from "../../../store/useLectureStore";
 
 export const LecturaPage = () => {
-  const [lecture, setLecture] = useState<Lecture>();
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const { customComponents, wordSelected } = useCustomMarkdownRenderer();
   const { id } = useParams<{ id: string }>();
 
-  const { getLectureById, activeLecture } = useLectureStore();
+  const { getLectureById, activeLecture,loading } = useLectureStore();
 
   useEffect(() => {
     const fetchLecture = async () => {
       await getLectureById(id!);
-      setLecture(activeLecture!);
     };
     fetchLecture();
-  }, [id, getLectureById]);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-b px-4 pt-2 pb-4 from-black-800 via-customGreen-100 to-customBlack-100 text-black-200 min-h-screen flex flex-col">
@@ -37,13 +42,13 @@ export const LecturaPage = () => {
             aria-label={`Duration: 3 minutes`}
           >
             <Timer className="w-4 h-4 text-green-800" />
-            <span>{lecture?.time} min</span>
+            <span>{activeLecture?.time} min</span>
           </span>
           <span
             className="border py-1 rounded-xl px-2 text-xs cursor-pointer text-green-600"
             title="Level A1"
           >
-            Level: <strong> {lecture?.level}</strong>
+            Level: <strong> {activeLecture?.level}</strong>
           </span>
         </section>
         <div className="flex items-center justify-center gap-3">
@@ -66,8 +71,8 @@ export const LecturaPage = () => {
         <div className="clearfix">
           <img
             src={
-              lecture?.img
-                ? lecture?.img
+              activeLecture?.img
+                ? activeLecture?.img
                 : "https://avatars.githubusercontent.com/u/6078720?s=200&v=4"
             }
             alt="NPM Logo"
@@ -79,7 +84,7 @@ export const LecturaPage = () => {
               components={customComponents}
               rehypePlugins={[rehypeRaw]}
             >
-              {lecture?.content}
+              {activeLecture?.content}
             </ReactMarkdown>
           </div>
         </div>
