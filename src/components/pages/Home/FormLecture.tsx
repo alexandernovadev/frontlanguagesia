@@ -153,7 +153,7 @@ export const FormLecture: React.FC<FormLectureProps> = ({
             {/* Render audio if URL exists */}
             {lecture.urlAudio && lecture.urlAudio.trim() !== "" && (
               <audio controls className="mt-2">
-                <source src={`${BACKURL}/public${lecture.urlAudio}`} type="audio/mpeg" />
+                <source src={`${BACKURL}${lecture.urlAudio}`} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
             )}
