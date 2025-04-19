@@ -4,6 +4,7 @@ export interface Lecture {
   level: string;
   typeWrite: string;
   language: string;
+  urlAudio?: string;
   img: string;
   content: string;
   createdAt?: Date; 

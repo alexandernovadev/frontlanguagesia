@@ -31,6 +31,18 @@ export const lectureService = {
     return handleResponse(res);
   },
 
+  async updateLectureAudioUrl(id: string, audioUrl: string, voice = "nova") {
+    const res = await fetch(`${BACKURL}/api/lectures/generateAudio/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ oldUrl: audioUrl, voice }),
+    });
+    return handleResponse(res);
+  },
+
   async putLecture(id: string, lectureData: Lecture) {
     const res = await fetch(`${BACKURL}/api/lectures/${id}`, {
       method: "PUT",

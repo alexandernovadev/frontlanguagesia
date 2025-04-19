@@ -22,6 +22,7 @@ interface LectureStore {
   ) => Promise<void>;
   deleteLecture: (id: string | number) => Promise<void>;
   clearErrors: () => void;
+  updateUrlAudio: (id: string, urlAudio: string) => Promise<void>;
 }
 
 export const useLectureStore = create<LectureStore>((set, get) => ({
@@ -80,6 +81,31 @@ export const useLectureStore = create<LectureStore>((set, get) => ({
       set({
         errors: { ...get().errors, post: error.message },
         actionLoading: { ...get().actionLoading, post: false },
+      });
+    }
+  },
+
+  updateUrlAudio: async (id: string, urlAudio: string, voice = "nova") => {
+    set({
+      actionLoading: { ...get().actionLoading, updateAudio: true },
+      errors: { ...get().errors, updateAudio: null },
+    });
+    try {
+      const { data } = await lectureService.updateLectureAudioUrl(id, urlAudio, voice);
+      set((state) => ({
+        lectures: state.lectures.map((lecture) =>
+          lecture._id === id ? { ...lecture, urlAudio: data.urlAudio } : lecture
+        ),
+        activeLecture:
+          state.activeLecture?._id === id
+            ? { ...state.activeLecture, urlAudio: data.urlAudio }
+            : state.activeLecture,
+        actionLoading: { ...state.actionLoading, updateAudio: false },
+      }));
+    } catch (error: any) {
+      set({
+        errors: { ...get().errors, updateAudio: error.message },
+        actionLoading: { ...get().actionLoading, updateAudio: false },
       });
     }
   },

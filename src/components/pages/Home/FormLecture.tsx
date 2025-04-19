@@ -6,7 +6,8 @@ import { TextAreaCustom } from "../../ui/TextArea";
 import { Card as CardType } from "./types/types";
 import { useLectureStore } from "../../../store/useLectureStore";
 
-import noImage from '../../../../public/images/noImage.png'
+import noImage from "../../../../public/images/noImage.png";
+import { BACKURL } from "../../../api/backConf";
 
 interface FormLectureProps {
   lecture: CardType;
@@ -21,16 +22,16 @@ export const FormLecture: React.FC<FormLectureProps> = ({
     defaultValues: lecture,
   });
 
-  const { actionLoading, putLectureImage, putLecture } = useLectureStore();
+  const { actionLoading, putLectureImage, putLecture, updateUrlAudio } =
+    useLectureStore();
 
   const onSubmit: SubmitHandler<CardType> = async (data) => {
     await putLecture(lecture._id! as string, data);
     onClose();
   };
 
-  // 🚀 Generate Image Handler
   const handleGenerateImage = async () => {
-    const { content, img } = getValues(); // Get lecture content and existing image
+    const { content, img } = getValues();
 
     if (!content) {
       alert("Lecture content is required to generate an image.");
@@ -38,6 +39,10 @@ export const FormLecture: React.FC<FormLectureProps> = ({
     }
 
     await putLectureImage(lecture._id! as string, content, img || "");
+  };
+
+  const handleupdateUrlAudioGpt = async () => {
+    await updateUrlAudio(lecture._id! as string, lecture.urlAudio || "");
   };
 
   // Disable all fields when loading
@@ -119,6 +124,41 @@ export const FormLecture: React.FC<FormLectureProps> = ({
             />
           </div>
 
+          {/* Audio URL */}
+          <div className="mb-4">
+            <label
+              htmlFor="img"
+              className="text-white flex justify-between mb-1"
+            >
+              Audio URL
+              <button
+                type="button"
+                onClick={handleupdateUrlAudioGpt}
+                className="text-white p-1 m-1 rounded-full border border-white transition flex items-center gap-2"
+                disabled={isDisabled}
+              >
+                {isDisabled ? (
+                  <Sparkles size={18} className="animate-pulse" />
+                ) : (
+                  <Sparkles size={18} />
+                )}
+              </button>
+            </label>
+            <Input
+              name="urlAudio"
+              control={control}
+              placeholder="Audio URL"
+              disabled={isDisabled}
+            />
+            {/* Render audio if URL exists */}
+            {lecture.urlAudio && lecture.urlAudio.trim() !== "" && (
+              <audio controls className="mt-2">
+                <source src={`${BACKURL}/public${lecture.urlAudio}`} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            )}
+          </div>
+          
           {/* Image Preview */}
           <div className="w-full h-full bg-gray-800 rounded-lg overflow-hidden">
             {lecture.img ? (

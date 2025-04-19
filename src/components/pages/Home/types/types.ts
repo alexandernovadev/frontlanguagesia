@@ -10,6 +10,7 @@ export interface Card {
   level: string;
   flag?: string;
   typeWrite: string;
+  urlAudio?: string;
   language: string;
   img: string;
   content: string;
