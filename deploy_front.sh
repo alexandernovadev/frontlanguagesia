@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-trap 'echo "❌ Error en la línea $LINENO. Abortando despliegue." >&2; exit 1' ERR
+trap 'echo "❌ Error en la línea $LINENO. Abortando despliegue." >&2' ERR
 
 echo "🚀 Iniciando script de despliegue del frontend..."
 
@@ -11,13 +11,13 @@ if ! command -v yarn &> /dev/null; then
     exit 1
 fi
 
-# Verificar si jq está instalado (necesario para leer package.json)
+# Verificar si jq está instalado
 if ! command -v jq &> /dev/null; then
     echo "❌ Error: jq no está instalado. Instálalo con 'sudo apt install jq'" >&2
     exit 1
 fi
 
-# Verificar que package.json exista
+# Verificar que package.jso exista
 if [[ ! -f package.json ]]; then
     echo "❌ Error: No se encontró package.json" >&2
     exit 1
@@ -35,9 +35,9 @@ DATE_FORMAT=$(TZ="America/Bogota" date +"Date 1 %B %d(%A) ⏰ %I:%M:%S %p - %Y 1
 # Actualizar VITE_VERSION en .env
 if [[ -f .env ]]; then
     echo "✍️  Actualizando VITE_VERSION en .env..."
-    sed -i "s/^VITE_VERSION=.*/VITE_VERSION=\"$DATE_FORMAT\"/" .env || {
-        echo "⚠️  No se pudo actualizar VITE_VERSION en .env. ¿Está definida?" >&2
-    }
+    if ! sed -i "s/^VITE_VERSION=.*/VITE_VERSION=\"$DATE_FORMAT\"/" .env; then
+        echo "⚠️  No se pudo actualiza VITE_VERSION en .env. ¿Está definida?" >&2
+    fi
 else
     echo "⚠️  Archivo .env no encontrado. Saltando actualización de VITE_VERSION." >&2
 fi
@@ -48,33 +48,46 @@ rm -rf node_modules package-lock.json yarn.lock
 
 # Instalar dependencias
 echo "📦 Instalando dependencias con Yarn..."
-yarn install --frozen-lockfile
+if ! OUTPUT=$(yarn install --frozen-lockfile 2>&1); then
+    echo "❌ Falló la instalación de dependencias con Yarn:"
+    echo "$OUTPUT"
+    exit 1
+fi
 
-# Compilar TypeScript antes de hacer el build (mejor diagnóstico)
+# Compilar TypeScript
 echo "🔍 Compilando TypeScript..."
-if ! yarn tsc -b; then
-    echo "❌ Falló la compilación de TypeScript" >&2
+if ! OUTPUT=$(yarn tsc -b 2>&1); then
+    echo "❌ Falló la compilación de TypeScript:"
+    echo "$OUTPUT"
     exit 1
 fi
 
-# Generar build de producción
+# Generar build de Vite
 echo "⚙️  Ejecutando build de Vite..."
-if ! yarn vite build; then
-    echo "❌ Falló la construcción con Vite" >&2
+if ! OUTPUT=$(yarn vite build 2>&1); then
+    echo "❌ Falló la construcción con Vite:"
+    echo "$OUTPUT"
     exit 1
 fi
 
-# Validar existencia del directorio de build
+# Validar directorio de salida
 if [[ ! -d dist ]]; then
     echo "❌ Error: El directorio 'dist' no fue generado." >&2
     exit 1
 fi
 
-# Desplegar en el servidor web
+# Desplegar al servidor web
 DEPLOY_PATH="/var/www/languages-ai"
 echo "🚀 Desplegando en $DEPLOY_PATH..."
-sudo rm -rf "$DEPLOY_PATH"/*
-sudo cp -r dist/* "$DEPLOY_PATH"
+if ! sudo rm -rf "$DEPLOY_PATH"/*; then
+    echo "❌ Error al limpiar el directorio de destino $DEPLOY_PATH" >&2
+    exit 1
+fi
+
+if ! sudo cp -r di "$DEPLOY_PATH"; then
+    echo "❌ Error al copiar archivos al directorio de destino $DEPLOY_PATH" >&2
+    exit 1
+fi
 
 # Ajustar permisos
 echo "🔧 Ajustando permisos de archivos..."
@@ -83,9 +96,12 @@ sudo chmod -R 755 "$DEPLOY_PATH"
 
 # Reiniciar Nginx
 echo "🔄 Reiniciando Nginx..."
-sudo systemctl restart nginx
+if ! sudo systemctl restart nginx; then
+    echo "❌ Error al reiniciar Nginx" >&2
+    exit 1
+fi
 
-# Restaurar repositorio una vez más por seguridad
+# Restaurar repositorio una vez más
 echo "🔄 Restaurando nuevamente el repositorio a estado limpio..."
 git reset --hard
 git clean -fd
