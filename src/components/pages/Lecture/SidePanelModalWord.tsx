@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CircleX, Loader, Volume2 } from "lucide-react";
 
-import { BACKURL } from "../../../api/backConf";
 import { Word } from "../../../models/Word";
 import { wordService } from "../../../services/wordService";
 
