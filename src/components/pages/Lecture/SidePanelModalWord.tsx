@@ -3,6 +3,7 @@ import { CircleX, Loader, Volume2 } from "lucide-react";
 
 import { BACKURL } from "../../../api/backConf";
 import { Word } from "../../../models/Word";
+import { wordService } from "../../../services/wordService";
 
 interface SidePanelProps {
   isVisible: boolean;
@@ -21,8 +22,7 @@ export const SidePanelModalWord: React.FC<SidePanelProps> = ({
 
   const getWord = async (word: string) => {
     try {
-      const response = await fetch(`${BACKURL}/api/words/word/${word}`);
-      const { data } = await response.json();
+      const { data } = await wordService.getWordByName(word);
       setWordDb(data);
     } catch (error) {
       console.error(error);
@@ -31,15 +31,14 @@ export const SidePanelModalWord: React.FC<SidePanelProps> = ({
 
   const generateWord = async () => {
     setLoadingGetWord(true);
+
+    if (!wordSelected) {
+      setLoadingGetWord(false);
+      return;
+    }
+
     try {
-      const response = await fetch(`${BACKURL}/api/ai/generate-wordJson`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: wordSelected, language: "en" }),
-      });
-      const { data } = await response.json();
+      const data = await wordService.generateWordJSON(wordSelected, "en");
       setWordDb(data);
     } catch (error) {
       console.error(error);

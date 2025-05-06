@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Lecture } from "../models/Lecture";
-import { lectureService } from "../services/lectureServie";
+import { lectureService } from "../services/lectureService";
 
 interface LectureStore {
   lectures: Lecture[];

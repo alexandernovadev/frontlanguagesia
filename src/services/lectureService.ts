@@ -22,10 +22,7 @@ export const lectureService = {
   async postLecture(lectureData: Lecture) {
     const res = await fetch(`${BACKURL}/api/lectures`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(lectureData),
     });
     return handleResponse(res);
@@ -34,10 +31,7 @@ export const lectureService = {
   async updateLectureAudioUrl(id: string, audioUrl: string, voice = "nova") {
     const res = await fetch(`${BACKURL}/api/lectures/generateAudio/${id}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ oldUrl: audioUrl, voice }),
     });
     return handleResponse(res);
@@ -46,10 +40,7 @@ export const lectureService = {
   async putLecture(id: string, lectureData: Lecture) {
     const res = await fetch(`${BACKURL}/api/lectures/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(lectureData),
     });
     return handleResponse(res);
@@ -59,10 +50,7 @@ export const lectureService = {
     const trimmedLectureString = lectureString.slice(0, 3500);
     const res = await fetch(`${BACKURL}/api/ai/generate-image-lecture/${id}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ lectureString: trimmedLectureString, imgOld }),
     });
     return handleResponse(res);

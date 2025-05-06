@@ -20,6 +20,7 @@ import { calculateReadingTime } from "../../../utils/calculateReadingTime";
 import { escapeMarkdown } from "../../../utils/escapeMarkdown";
 import { useLectureStore } from "../../../store/useLectureStore";
 import { Lecture } from "../../../models/Lecture";
+import { getAuthHeaders } from "../../../services/utils/headers";
 
 export const GeneratorPage = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -74,9 +75,7 @@ export const GeneratorPage = () => {
     try {
       const response = await fetch(`${BACKURL}/api/ai/generate-text`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           prompt,
           level,

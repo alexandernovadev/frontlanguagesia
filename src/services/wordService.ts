@@ -77,4 +77,13 @@ export const wordService = {
     });
     return handleResponse(response);
   },
+
+  generateWordJSON: async (prompt: string, language = "en") => {
+    const response = await fetch(`${BACKURL}/api/ai/generate-wordJson`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ prompt, language }),
+    });
+    return handleResponse(response);
+  },
 };

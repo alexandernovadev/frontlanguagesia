@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { Loader, Turtle, Volume2 } from "lucide-react";
 
-import { BACKURL } from "../../../../api/backConf";
 import { Word } from "../../../../models/Word";
 import { getLevelColor } from "../../../../utils/getLevelColor";
+import { wordService } from "../../../../services/wordService";
 
 export const GenerateWord = () => {
   const [loadingGetWord, setLoadingGetWord] = useState(false);
@@ -19,23 +19,12 @@ export const GenerateWord = () => {
     setLoadingGetWord(true);
 
     try {
-      const response = await fetch(`${BACKURL}/api/ai/generate-wordJson`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: wordToSearch, language: "en" }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const { data } = await response.json();
+      // todo that "en" should be dynamic
+      const data = await wordService.generateWordJSON(wordToSearch, "en");
       setWordDb(data);
     } catch (error) {
-      console.error("Failed to generate word:", error)
-      setWordDb(undefined); // Reset the state if there's an error
+      console.error("Failed to generate word:", error);
+      setWordDb(undefined);
     } finally {
       setLoadingGetWord(false);
     }
@@ -64,14 +53,14 @@ export const GenerateWord = () => {
         onChange={(e) => setWordToSearch(e.target.value)}
         className="p-2 border border-green-600 rounded-md w-full mb-4"
       />
-  
+
       <div className="pt-2 space-y-6">
         <section className="flex flex-col md:flex-row gap-2 justify-start items-center">
           <h1 className="text-3xl md:text-4xl font-bold text-green-400 capitalize">
             {wordToSearch || "Search for a word"}
           </h1>
         </section>
-  
+
         {wordDb ? (
           <div className="flex flex-col rounded-lg gap-4">
             <div className="px-2">
@@ -89,7 +78,7 @@ export const GenerateWord = () => {
                   👀 {wordDb.seen}
                 </p>
               </div>
-  
+
               <div className="flex gap-3 mt-2 flex-wrap">
                 <button
                   onClick={() => listenWord()}
@@ -106,14 +95,12 @@ export const GenerateWord = () => {
                   <Turtle size={32} color="green" />
                 </button>
               </div>
-  
+
               <p className="text-2xl text-purple-500 mt-2 font-bold">
                 {wordDb.IPA}
               </p>
-              <p className="text-gray-400 mt-2 text-lg">
-                {wordDb.definition}
-              </p>
-  
+              <p className="text-gray-400 mt-2 text-lg">{wordDb.definition}</p>
+
               {wordDb.spanish && (
                 <div className="mt-2">
                   <p className="text-blue-500 text-2xl md:text-3xl font-bold capitalize">
@@ -124,10 +111,12 @@ export const GenerateWord = () => {
                   </p>
                 </div>
               )}
-  
+
               {wordDb.examples && wordDb.examples.length > 0 && (
                 <div className="mt-2">
-                  <h3 className="text-gray-400 font-bold text-base">Examples</h3>
+                  <h3 className="text-gray-400 font-bold text-base">
+                    Examples
+                  </h3>
                   <ul className="text-gray-300 space-y-1 mt-1 text-base">
                     {wordDb.examples.map((example, index) => (
                       <li key={index} className="list-disc list-inside">
@@ -137,10 +126,12 @@ export const GenerateWord = () => {
                   </ul>
                 </div>
               )}
-  
+
               {wordDb.sinonyms && wordDb.sinonyms.length > 0 && (
                 <div className="mt-2">
-                  <h3 className="text-gray-400 font-bold text-base">Synonyms</h3>
+                  <h3 className="text-gray-400 font-bold text-base">
+                    Synonyms
+                  </h3>
                   <ul className="text-white space-y-1 mt-1 text-base capitalize">
                     {wordDb.sinonyms.map((synonym, index) => (
                       <li key={index} className="list-disc list-inside">
@@ -150,10 +141,12 @@ export const GenerateWord = () => {
                   </ul>
                 </div>
               )}
-  
+
               {wordDb.type && wordDb.type.length > 0 && (
                 <div className="mt-2">
-                  <h3 className="text-gray-400 font-bold text-base">Word Types</h3>
+                  <h3 className="text-gray-400 font-bold text-base">
+                    Word Types
+                  </h3>
                   <ul className="text-white space-y-1 mt-1 text-base capitalize">
                     {wordDb.type.map((type, index) => (
                       <li key={index} className="list-disc list-inside">
@@ -185,5 +178,4 @@ export const GenerateWord = () => {
       </div>
     </form>
   );
-  
 };
