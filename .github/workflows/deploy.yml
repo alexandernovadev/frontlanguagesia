@@ -40,6 +40,7 @@ jobs:
             echo "🚀 Iniciando despliegue..."
 
             cd /root/novalabs/frontlanguagesia
+            git reset --hard HEAD
             git pull origin main
 
             echo "✅ Cambios más recientes obtenidos desde main."
