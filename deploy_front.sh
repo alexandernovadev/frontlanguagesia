@@ -84,7 +84,7 @@ if ! sudo rm -rf "$DEPLOY_PATH"/*; then
     exit 1
 fi
 
-if ! sudo cp -r di "$DEPLOY_PATH"; then
+if ! sudo cp -r dist/* "$DEPLOY_PATH"; then
     echo "❌ Error al copiar archivos al directorio de destino $DEPLOY_PATH" >&2
     exit 1
 fi
