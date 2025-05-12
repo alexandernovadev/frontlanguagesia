@@ -33,7 +33,10 @@ export const CardList = () => {
 
       {loading && currentPage === 1 ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-pulse w-16 h-16 bg-gray-300 rounded-full"></div>
+          <div className="flex items-center gap-2 text-green-500">
+            <Loader className="animate-spin w-8 h-8" />
+            <span>Loading...</span>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
