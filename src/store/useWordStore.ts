@@ -11,6 +11,7 @@ interface WordStore {
   totalPages: number;
   currentPage: number;
   searchQuery: string;
+  total: number;
 
   getWords: (page?: number, limit?: number, wordUser?: string) => Promise<void>;
   setPage: (page: number) => void;
@@ -37,6 +38,7 @@ export const useWordStore = create<WordStore>((set, get) => ({
   totalPages: 1,
   currentPage: 1,
   searchQuery: "",
+  total: 0,
 
   getWords: async (
     page = get().currentPage,
@@ -51,7 +53,12 @@ export const useWordStore = create<WordStore>((set, get) => ({
     });
     try {
       const { data } = await wordService.getWords(page, limit, wordUser);
-      set({ words: data.data, totalPages: data.pages, loading: false });
+      set({ 
+        words: data.data, 
+        totalPages: data.pages, 
+        total: data.total,
+        loading: false 
+      });
     } catch (error: any) {
       set({ errors: error.message, loading: false });
     }

@@ -21,6 +21,7 @@ export const WordPage = () => {
     errors, 
     currentPage: page,
     totalPages,
+    total,
     setPage,
     setSearchQuery,
     retry,
@@ -57,8 +58,8 @@ export const WordPage = () => {
 
   const handleEdit = async (word: Word) => {
     try {
-      const { _id, __v, ...rest } = word;
-      await updateWord(_id, rest); // Use store’s updateWord method
+      const { _id, ...rest } = word;
+      await updateWord(_id, rest);
       toast.success("Word updated successfully!");
     } catch (error) {
       console.error(error);
@@ -68,7 +69,7 @@ export const WordPage = () => {
 
   const handleRemove = async (id: string) => {
     try {
-      await deleteWord(id); // Use store’s deleteWord method
+      await deleteWord(id);
       toast.success("Word removed successfully!");
     } catch (error) {
       console.error(error);
@@ -89,7 +90,11 @@ export const WordPage = () => {
             <CirclePlus />
           </button>
 
-          <Input name="searchQuery" control={control} placeholder="Search..." />
+          <Input 
+            name="searchQuery" 
+            control={control} 
+            placeholder={`Search in ${total} words...`} 
+          />
 
           <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
             <GenerateWord />
