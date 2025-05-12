@@ -56,7 +56,7 @@ export const WordTable = ({
   };
 
   return (
-    <div className="overflow-y-auto w-full h-[70vh] customHeightApp">
+    <div className="overflow-y-auto w-full h-[70dvh]">
       <table className="min-w-full text-gray-100 table-auto">
         <tbody>
           {words.map((word) => (

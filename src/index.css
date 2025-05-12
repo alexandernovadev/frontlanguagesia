@@ -11,9 +11,7 @@ html {
 }
 
 #root {
-  overflow: scroll;
   overflow: hidden;
-  height: 100vh;
   width: 100vw;
   max-width: 1024px;
   margin: 0 auto;
@@ -24,19 +22,6 @@ html {
   font-weight: 500;
   font-style: normal;
   text-transform: capitalize;
-}
-
-
-/*By Default all browser have url navbar*/
-@media (max-height: 780px) {
-  .customHeightApp {
-    height: 60vh !important;
-  }
-
-  #root {
-    padding-bottom: 120px;
-  }
-
 }
 
 input,

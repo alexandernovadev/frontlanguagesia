@@ -7,8 +7,10 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className={`text-black-200 h-full`}>
-      {children}
+    <div className="text-black-200 h-[100dvh] flex flex-col">
+      <div className="flex-1 overflow-auto">
+        {children}
+      </div>
       <NabvarMain />
     </div>
   );
