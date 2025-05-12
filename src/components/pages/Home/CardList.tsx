@@ -1,8 +1,8 @@
 import { useEffect } from "react";
+import { Loader } from "lucide-react";
 
 import { Card } from "./Card";
 import { useLectureStore } from "../../../store/useLectureStore";
-import { Loading } from "../Words/Loading";
 
 export const CardList = () => {
   const {
@@ -31,14 +31,20 @@ export const CardList = () => {
         <div className="text-red-500 mb-4">⚠️ Error: {errors.get}</div>
       )}
 
-      {loading ? (
+      {loading && currentPage === 1 ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-pulse w-16 h-16 bg-gray-300 rounded-full"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 ">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {lectures?.map((card, i) => (
-            <Card key={`${card._id}|${i}`} card={card} />
+            <div 
+              key={`${card._id}|${i}`}
+              className="animate__animated animate__fadeInUp"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            >
+              <Card card={card} />
+            </div>
           ))}
         </div>
       )}
@@ -46,20 +52,21 @@ export const CardList = () => {
       {lectures.length > 0 && currentPage < totalPages && (
         <button
           onClick={loadMore}
-          className={`mt-4 px-4 py-2 text-white rounded-lg flex items-center gap-2 ${
+          className={`mt-8 px-6 py-3 text-white rounded-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 ${
             actionLoading.get
-              ? "bg-gray-500 cursor-not-allowed"
+              ? "bg-gray-500 cursor-not-allowed opacity-75"
               : "bg-green-700 hover:bg-green-600"
           }`}
           disabled={actionLoading.get}
         >
-          {actionLoading.get ? (
-            <>
-             <Loading />
-            </>
-          ) : (
-            "Load More"
-          )}
+          <div className="flex items-center gap-2">
+            {actionLoading.get && (
+              <Loader className="animate-spin w-5 h-5" />
+            )}
+            <span>
+              {actionLoading.get ? "Loading..." : "Load More"}
+            </span>
+          </div>
         </button>
       )}
     </div>
