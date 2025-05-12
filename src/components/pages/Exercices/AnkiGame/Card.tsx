@@ -40,7 +40,7 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
 
   if (!card) {
     return (
-      <div className="w-[95%] h-[80vh] mx-auto flex items-center justify-center text-gray-400">
+      <div className="w-full flex items-center justify-center text-gray-400 py-8">
         No card data available
       </div>
     );
@@ -48,13 +48,14 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
 
   return (
     <div
-      className="relative w-[65%] h-[71vh] rounded-lg overflow-hidden mx-auto"
+      className="relative w-full max-w-4xl rounded-lg mx-auto"
       style={{ perspective: "1000px" }}
     >
       {/* Flip Button */}
       <button
         onClick={handleFlip}
-        className="absolute top-4 left-4 px-4 py-2 flex gap-2 bg-green-700 text-white rounded-lg shadow-md hover:bg-green-800 z-30 transition-colors"
+        className="absolute top-4 left-4 px-4 py-2 flex gap-2 bg-green-700 text-white rounded-lg shadow-md hover:bg-green-800 z-30 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+        aria-label="Flip card"
       >
         <FlipHorizontal size={20} />
         <span className="font-bold text-gray-300">Flip</span>
@@ -62,7 +63,7 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
 
       {/* Card Container */}
       <div
-        className="w-full h-full border border-green-800 rounded-lg shadow-lg transition-transform duration-500 ease-in-out"
+        className="w-full border border-green-800 rounded-lg shadow-lg transition-transform duration-500 ease-in-out"
         style={{
           transformStyle: "preserve-3d",
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -71,91 +72,100 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
       >
         {/* Front Side */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center bg-gray-900 rounded-lg "
+          className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-gray-900 rounded-lg"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <div className="flex items-center justify-between w-full px-8 mt-4">
-            <h2 className="text-4xl font-bold capitalize text-green-600">
+          <div className="flex items-center justify-between w-full px-4 sm:px-8 mt-4">
+            <h2 className="text-3xl sm:text-4xl font-bold capitalize text-green-600">
               {card.word}
             </h2>
             <div className="flex gap-3">
               <button
                 onClick={() => listenWord()}
                 title="Normal Speed"
-                className="border p-2 rounded-full border-green-400"
+                className="border p-2 rounded-full border-green-400 hover:bg-green-400/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                aria-label="Listen at normal speed"
               >
-                <Volume2 size={32} />
+                <Volume2 size={24} />
               </button>
               <button
                 onClick={() => listenWord(0.009)}
                 title="Slow Speed"
-                className="border p-2 rounded-full border-green-400"
+                className="border p-2 rounded-full border-green-400 hover:bg-green-400/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                aria-label="Listen at slow speed"
               >
-                <Turtle size={32} />
+                <Turtle size={24} />
               </button>
             </div>
           </div>
-          <p className="text-2xl text-purple-500 mt-2 font-bold">{card.IPA}</p>
+          <p className="text-xl sm:text-2xl text-purple-500 mt-2 font-bold">{card.IPA}</p>
           {card.img && (
             <img
               src={card.img}
               alt={card.word}
-              className="w-full h-[360px] object-cover rounded-lg mt-2"
+              className="w-full h-auto max-h-[360px] object-cover rounded-lg mt-4"
+              loading="lazy"
             />
           )}
         </div>
 
         {/* Back Side */}
         <div
-          className="absolute inset-0 flex flex-col justify-between p-2 bg-black-900 rounded-lg "
+          className="absolute inset-0 flex flex-col justify-between p-4 bg-black-900 rounded-lg"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
           }}
         >
-          <div className="mt-14 px-2 overflow-scroll">
-            <div className="flex justify-between items-center">
+          <div className="mt-14 px-2">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
               <h2 className="text-2xl font-bold capitalize text-green-600">
                 {card.word}
               </h2>
 
-              <span
-                className="text-lg font-bold px-2 py-1 rounded-full border"
-                style={{
-                  color: getLevelColor(card.level),
-                  borderColor: getLevelColor(card.level),
-                }}
-              >
-                {card.level || "Unknown"}
-              </span>
-              <p className="text-yellow-500 mt-1 text-base font-bold">
-                👀 {card.seen}
-              </p>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-lg font-bold px-2 py-1 rounded-full border"
+                  style={{
+                    color: getLevelColor(card.level),
+                    borderColor: getLevelColor(card.level),
+                  }}
+                >
+                  {card.level || "Unknown"}
+                </span>
+                <p className="text-yellow-500 text-base font-bold">
+                  👀 {card.seen}
+                </p>
+              </div>
             </div>
-            <div className="flex gap-3">
+
+            <div className="flex gap-3 mt-2">
               <button
                 onClick={() => listenWord()}
                 title="Normal Speed"
-                className="border p-2 rounded-full border-green-400"
+                className="border p-2 rounded-full border-green-400 hover:bg-green-400/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                aria-label="Listen at normal speed"
               >
-                <Volume2 size={32} />
+                <Volume2 size={24} />
               </button>
               <button
                 onClick={() => listenWord(0.009)}
                 title="Slow Speed"
-                className="border p-2 rounded-full border-green-400"
+                className="border p-2 rounded-full border-green-400 hover:bg-green-400/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                aria-label="Listen at slow speed"
               >
-                <Turtle size={32} />
+                <Turtle size={24} />
               </button>
             </div>
-            <p className="text-2xl text-purple-500 mt-2 font-bold">
+
+            <p className="text-xl sm:text-2xl text-purple-500 mt-2 font-bold">
               {card.IPA}
             </p>
-            <p className="text-gray-400 mt-2 text-lg">{card.definition}</p>
+            <p className="text-gray-400 mt-2 text-base sm:text-lg">{card.definition}</p>
 
             {card.spanish && (
-              <div className="mt-2">
-                <p className="text-blue-800 text-xl font-bold capitalize">
+              <div className="mt-4">
+                <p className="text-blue-800 text-lg sm:text-xl font-bold capitalize">
                   {card.spanish.word}
                 </p>
                 <p className="text-gray-300 text-base">
@@ -165,7 +175,7 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
             )}
 
             {card.examples && card.examples.length > 0 && (
-              <div className="mt-2">
+              <div className="mt-4">
                 <h3 className="text-gray-400 font-bold text-base">Examples</h3>
                 <ul className="text-gray-300 space-y-1 mt-1 text-base">
                   {card.examples.map((example, index) => (
@@ -178,7 +188,7 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
             )}
 
             {card.sinonyms && card.sinonyms.length > 0 && (
-              <div className="mt-2">
+              <div className="mt-4">
                 <h3 className="text-gray-400 font-bold text-base">Synonyms</h3>
                 <ul className="text-white space-y-1 mt-1 text-base capitalize">
                   {card.sinonyms.map((synonym, index) => (
@@ -191,7 +201,7 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
             )}
 
             {card.type && card.type.length > 0 && (
-              <div className="mt-2">
+              <div className="mt-4">
                 <h3 className="text-gray-400 font-bold text-base">
                   Word Types
                 </h3>
@@ -207,23 +217,35 @@ export const Card: React.FC<CardProps> = ({ card, flipped, onFlip }) => {
           </div>
 
           {/* Level Buttons */}
-          <div className="flex justify-around mt-2 mb-3 px-5 gap-2">
+          <div className="flex justify-around mt-4 mb-3 px-2 sm:px-5 gap-2">
             {["easy", "medium", "hard"].map((level) => (
               <button
                 key={level}
                 onClick={() => handleLevelUpdate(level)}
                 disabled={actionLoading.updateLevel || card.level === level}
-                className={`flex-1 py-2 rounded-lg text-gray-300 font-bold text-base transition-colors shadow-md ${
-                  level === "easy"
-                    ? "bg-green-700 hover:bg-green-800"
-                    : level === "medium"
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-red-700 hover:bg-red-800"
-                } ${
-                  actionLoading.updateLevel || card.level === level
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
+                className={`flex-1 py-2 rounded-lg text-gray-300 font-bold text-sm sm:text-base transition-colors shadow-md
+                  ${
+                    level === "easy"
+                      ? "bg-green-700 hover:bg-green-800"
+                      : level === "medium"
+                      ? "bg-blue-700 hover:bg-blue-800"
+                      : "bg-red-700 hover:bg-red-800"
+                  }
+                  ${
+                    actionLoading.updateLevel || card.level === level
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }
+                  focus:outline-none focus:ring-2 focus:ring-offset-2
+                  ${
+                    level === "easy"
+                      ? "focus:ring-green-500"
+                      : level === "medium"
+                      ? "focus:ring-blue-500"
+                      : "focus:ring-red-500"
+                  }`}
+                aria-label={`Mark as ${level}`}
+                aria-disabled={actionLoading.updateLevel || card.level === level}
               >
                 {level.charAt(0).toUpperCase() + level.slice(1)}
               </button>

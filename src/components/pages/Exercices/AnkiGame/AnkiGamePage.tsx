@@ -23,48 +23,64 @@ export const AnkiGamePage = () => {
   const handleNext = () => {
     if (currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setFlipped(false); // Reset to front view
+      setFlipped(false);
     }
   };
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setFlipped(false); // Reset to front view
+      setFlipped(false);
     }
   };
 
-  return (
-    <section className="flex flex-col mt-12 w-full overflow-hidden justify-center items-center">
-      {loading ? (
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
         <Loading />
-      ) : errors ? (
-        <p className="text-red-600">
+      </div>
+    );
+  }
+
+  if (errors) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <p className="text-red-600 text-center px-4">
           {typeof errors === "string"
             ? errors
             : errors.getRecentHardOrMedium || "Failed to load cards."}
         </p>
-      ) : (
-        <div className="mx-3 w-[65%]">
-          {cards.length > 0 ? (
-            <>
-              <Card
-                card={cards[currentIndex]}
-                flipped={flipped}
-                onFlip={() => setFlipped(!flipped)}
-              />
-              <CardNavigation
-                currentIndex={currentIndex}
-                totalCards={cards.length}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
-              />
-            </>
-          ) : (
-            <p>No cards available.</p>
-          )}
-        </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <section 
+      className="flex flex-col w-full justify-center items-center"
+      role="region"
+      aria-label="Anki game"
+    >
+      <div className="w-full px-4 sm:px-6">
+        {cards.length > 0 ? (
+          <>
+            <Card
+              card={cards[currentIndex]}
+              flipped={flipped}
+              onFlip={() => setFlipped(!flipped)}
+            />
+            <CardNavigation
+              currentIndex={currentIndex}
+              totalCards={cards.length}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          </>
+        ) : (
+          <div className="flex items-center justify-center min-h-[50vh]">
+            <p className="text-center text-gray-400 py-8">No cards available.</p>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
