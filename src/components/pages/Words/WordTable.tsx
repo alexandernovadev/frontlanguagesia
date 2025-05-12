@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Pencil, Trash2, Volume2 } from "lucide-react";
+import { Pencil, Trash2, Volume2, Eye } from "lucide-react";
 
 import EditWordModal from "./Form/FormWordModal";
 import { Word } from "../../../models/Word";
 import { getLevelColor } from "../../../utils/getLevelColor";
+import { Modal } from "../../shared/Modal";
+import { ViewWord } from "./ViewWord";
 
 export const WordTable = ({
   words,
@@ -14,7 +16,8 @@ export const WordTable = ({
   onEdit: (updatedWord: Word) => void;
   onRemove: (id: string) => void;
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [activeWord, setActiveWord] = useState<Word | null>(null);
 
   // Function to listen to the word pronunciation
@@ -26,22 +29,29 @@ export const WordTable = ({
     }
   };
 
-  // Function to handle opening the modal and setting the active word
+  // Function to handle opening the edit modal and setting the active word
   const handleEditClick = (word: Word) => {
     setActiveWord(word);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
+  };
+
+  // Function to handle opening the view modal and setting the active word
+  const handleViewClick = (word: Word) => {
+    setActiveWord(word);
+    setIsViewModalOpen(true);
   };
 
   // Function to handle the submission from the modal
   const handleEditSubmit = (updatedWord: Word) => {
     onEdit(updatedWord); // Pass the updated word to the parent component
-    setIsModalOpen(false);
+    setIsEditModalOpen(false);
     setActiveWord(null);
   };
 
-  // Function to handle closing the modal
+  // Function to handle closing the modals
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsViewModalOpen(false);
     setActiveWord(null);
   };
 
@@ -93,12 +103,24 @@ export const WordTable = ({
 
               {/* Íconos de acción */}
               <td className="px-1 py-1">
-                <div className="flex justify-center items-center gap-2">
-                  <button onClick={() => handleEditClick(word)}>
-                    <Pencil className="w-4 h-4 text-yellow-400" />
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => handleViewClick(word)}
+                    className="p-2 border border-green-400 rounded-full hover:bg-green-400 hover:text-black transition-colors"
+                  >
+                    <Eye size={20} />
                   </button>
-                  <button onClick={() => onRemove(word._id)}>
-                    <Trash2 className="w-4 h-4 text-red-600" />
+                  <button
+                    onClick={() => handleEditClick(word)}
+                    className="p-2 border border-green-400 rounded-full hover:bg-green-400 hover:text-black transition-colors"
+                  >
+                    <Pencil size={20} />
+                  </button>
+                  <button
+                    onClick={() => onRemove(word._id)}
+                    className="p-2 border border-red-400 rounded-full hover:bg-red-400 hover:text-black transition-colors"
+                  >
+                    <Trash2 size={20} />
                   </button>
                 </div>
               </td>
@@ -107,15 +129,20 @@ export const WordTable = ({
         </tbody>
       </table>
 
-      {/* Modal para editar */}
-      {isModalOpen && activeWord && (
+      {/* Edit Modal */}
+      {activeWord && (
         <EditWordModal
-          isOpen={isModalOpen}
+          isOpen={isEditModalOpen}
           onClose={handleModalClose}
           onSubmit={handleEditSubmit}
           wordData={activeWord}
         />
       )}
+
+      {/* View Modal */}
+      <Modal isOpen={isViewModalOpen} onClose={handleModalClose}>
+        {activeWord && <ViewWord word={activeWord} />}
+      </Modal>
     </div>
   );
 };

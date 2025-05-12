@@ -209,7 +209,7 @@ const EditWordModal: React.FC<EditWordModalProps> = ({
             <label className="text-white" htmlFor="img">
               Image
             </label>
-            {wordData.img && (
+            {wordData?.img && (
               <img
                 className="w-32 h-32 object-cover rounded-lg mt-2"
                 src={wordData.img}

@@ -1,24 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
-import { CirclePlus } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { MainLayout } from "../../shared/Layouts/MainLayout";
 import { Loading } from "./Loading";
 import { ErrorMessage } from "./ErrorMessage";
 import { WordTable } from "./WordTable";
-import { Modal } from "../../shared/Modal";
-import { GenerateWord } from "./generateWord/GenerateWord";
 import Input from "../../ui/Input";
 import { Word } from "../../../models/Word";
 import { debounce } from "../../../utils/debounce";
 import { useWordStore } from "../../../store/useWordStore";
+import { wordService } from "../../../services/wordService";
 
 export const WordPage = () => {
   const {
     words,
     loading,
-    errors, 
+    errors,
     currentPage: page,
     totalPages,
     total,
@@ -29,7 +28,7 @@ export const WordPage = () => {
     deleteWord,
   } = useWordStore();
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -77,36 +76,59 @@ export const WordPage = () => {
     }
   };
 
+  const handleGenerateWord = async () => {
+    if (!searchQuery) return;
+
+    setIsGenerating(true);
+    try {
+      await wordService.generateWordJSON(searchQuery, "en");
+      toast.success("Word generated successfully!");
+      // Refresh the word list to show the new word
+      retry();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error generating word.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const filteredWords = words.filter((word) =>
+    word.word.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <MainLayout>
       <div className="text-customGreen-100 p-6 h-auto">
         {errors && <ErrorMessage retry={retry} />}
         <div className="flex justify-between items-center w-full pb-4">
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 border mx-2 border-green-600 rounded-lg text-white bg-green-600"
-          >
-            <CirclePlus />
-          </button>
-
-          <Input 
-            name="searchQuery" 
-            control={control} 
-            placeholder={`Search in ${total} words...`} 
+          <Input
+            name="searchQuery"
+            control={control}
+            placeholder={`Search in ${total} words...`}
           />
-
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <GenerateWord />
-          </Modal>
         </div>
         {loading ? (
           <Loading />
+        ) : filteredWords.length === 0 && searchQuery ? (
+          <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
+            <p className="text-green-300 text-center text-xl">
+              No word found for "{searchQuery}"
+            </p>
+            <button
+              onClick={handleGenerateWord}
+              disabled={isGenerating}
+              className="flex items-center justify-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-800 text-white rounded-md font-medium"
+            >
+              {isGenerating ? (
+                <Loader className="animate-spin w-5 h-5" />
+              ) : null}
+              {isGenerating ? "Generating..." : "Generate Word with AI"}
+            </button>
+          </div>
         ) : (
           <WordTable
-            words={words.filter((word) =>
-              word.word.toLowerCase().includes(searchQuery.toLowerCase())
-            )}
+            words={filteredWords}
             onEdit={handleEdit}
             onRemove={handleRemove}
           />
