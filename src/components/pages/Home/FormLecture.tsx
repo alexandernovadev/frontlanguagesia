@@ -6,7 +6,7 @@ import { TextAreaCustom } from "../../ui/TextArea";
 import { Card as CardType } from "./types/types";
 import { useLectureStore } from "../../../store/useLectureStore";
 
-import noImage from "../../../../public/images/noImage.png";
+import noImage from "../../../assets/images/noImage.png";
 import { BACKURL } from "../../../api/backConf";
 
 interface FormLectureProps {
