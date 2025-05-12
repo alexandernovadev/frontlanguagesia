@@ -1,4 +1,3 @@
-import React from "react";
 import { Volume2, Turtle } from "lucide-react";
 import { Word } from "../../../models/Word";
 import { getLevelColor } from "../../../utils/getLevelColor";
