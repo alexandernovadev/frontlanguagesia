@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Loader } from "lucide-react";
 
 import { Card } from "./Card";
@@ -18,6 +18,11 @@ export const CardList = () => {
   useEffect(() => {
     getLectures();
   }, []);
+
+  // Memoize the lectures to render (add filters/sorts here if needed)
+  const renderedLectures = useMemo(() => {
+    return lectures;
+  }, [lectures]);
 
   const loadMore = () => {
     if (currentPage < totalPages && !actionLoading.get) {
@@ -40,7 +45,7 @@ export const CardList = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {lectures?.map((card, i) => (
+          {renderedLectures?.map((card, i) => (
             <div 
               key={`${card._id}|${i}`}
               className="animate__animated animate__fadeInUp"

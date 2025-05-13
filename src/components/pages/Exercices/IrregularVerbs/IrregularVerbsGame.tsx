@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, ArrowRight, Check, CheckCircle, X } from "lucide-react";
 
 import verbs from "./tabla.json";
@@ -28,8 +28,16 @@ export const IrregularVerbsGame = () => {
     setShuffledVerbs(shuffled);
   }, []);
 
-  // Calcular el total de páginas basado en el array mezclado
-  const totalPages = Math.ceil(shuffledVerbs.length / ITEMS_PER_PAGE);
+  // Memoize totalPages and currentVerbs
+  const totalPages = useMemo(
+    () => Math.ceil(shuffledVerbs.length / ITEMS_PER_PAGE),
+    [shuffledVerbs.length]
+  );
+
+  const currentVerbs: Verb[] = useMemo(
+    () => shuffledVerbs.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE),
+    [shuffledVerbs, page]
+  );
 
   useEffect(() => {
     if (shuffledVerbs.length === 0) return; // Esperar a que shuffledVerbs esté listo
@@ -69,12 +77,6 @@ export const IrregularVerbsGame = () => {
     utterance.rate = 1;
     window.speechSynthesis.speak(utterance);
   };
-
-  const startIndex = page * ITEMS_PER_PAGE;
-  const currentVerbs: Verb[] = shuffledVerbs.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
 
   return (
     <MainLayout>
