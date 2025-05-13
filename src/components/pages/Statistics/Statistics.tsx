@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { BarChart, BookOpen } from "lucide-react";
 
 import { MainLayout } from "../../shared/Layouts/MainLayout";
@@ -23,6 +23,33 @@ export const Statistics = () => {
 
     fetchStatistics();
   }, []);
+
+  const processedData = useMemo(() => {
+    if (!data) return null;
+
+    return {
+      lectures: {
+        total: data.lectures.total,
+        byLevel: Object.entries(data.lectures)
+          .filter(([key]) => key !== 'total')
+          .map(([level, count]) => ({
+            level,
+            count,
+            percentage: (count / data.lectures.total) * 100
+          }))
+      },
+      words: {
+        total: data.words.total,
+        byDifficulty: Object.entries(data.words)
+          .filter(([key]) => key !== 'total')
+          .map(([difficulty, count]) => ({
+            difficulty,
+            count,
+            percentage: (count / data.words.total) * 100
+          }))
+      }
+    };
+  }, [data]);
 
   return (
     <MainLayout>

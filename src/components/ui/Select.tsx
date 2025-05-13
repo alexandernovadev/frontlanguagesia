@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useController, Control } from "react-hook-form";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -53,15 +53,21 @@ const Select: React.FC<SelectProps> = ({
     setSearch("");
   };
 
-  const displayValue = multiple
-    ? options
-        .filter((option) => value.includes(option.value))
-        .map((option) => option.label)
-        .join(", ")
-    : options.find((option) => option.value === value)?.label || "";
+  const displayValue = useMemo(() => 
+    multiple
+      ? options
+          .filter((option) => value.includes(option.value))
+          .map((option) => option.label)
+          .join(", ")
+      : options.find((option) => option.value === value)?.label || "",
+    [options, value, multiple]
+  );
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(search.toLowerCase())
+  const filteredOptions = useMemo(() => 
+    options.filter((option) =>
+      option.label.toLowerCase().includes(search.toLowerCase())
+    ),
+    [options, search]
   );
 
   useEffect(() => {

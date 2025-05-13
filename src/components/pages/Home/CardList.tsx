@@ -19,9 +19,17 @@ export const CardList = () => {
     getLectures();
   }, []);
 
-  // Memoize the lectures to render (add filters/sorts here if needed)
+  // Memoize the lectures to render with filters and sorting
   const renderedLectures = useMemo(() => {
-    return lectures;
+    return lectures
+      .filter(lecture => {
+        // Aquí puedes agregar filtros adicionales si es necesario
+        return true;
+      })
+      .sort((a, b) => {
+        // Ordenar por fecha de creación o cualquier otro criterio
+        return new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime();
+      });
   }, [lectures]);
 
   const loadMore = () => {
