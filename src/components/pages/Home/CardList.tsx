@@ -22,7 +22,7 @@ export const CardList = () => {
   // Memoize the lectures to render with filters and sorting
   const renderedLectures = useMemo(() => {
     return lectures
-      .filter(lecture => {
+      .filter(() => {
         // Aquí puedes agregar filtros adicionales si es necesario
         return true;
       })

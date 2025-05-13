@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { BarChart, BookOpen } from "lucide-react";
 
 import { MainLayout } from "../../shared/Layouts/MainLayout";
@@ -74,25 +74,21 @@ export const Statistics = () => {
                     loading ? "animate-pulse h-2 rounded bg-gray-100" : ""
                   }`}
                 >
-                  {loading ? "..." : data?.words.total}
+                  {loading ? "..." : processedData?.words.total}
                 </span>
               </h2>
             </section>
             <div className="grid grid-cols-2 w-full text-white-700 text-md gap-y-1">
-              <span className="text-green-500 font-semibold text-lg">Easy</span>
-              <span className="font-bold text-white">
-                {loading ? "..." : data?.words.easy}
-              </span>
-              <span className="text-blue-500 font-semibold text-lg">
-                Medium
-              </span>
-              <span className="font-bold text-white">
-                {loading ? "..." : data?.words.medium}
-              </span>
-              <span className="text-red-500 font-semibold text-lg">Hard</span>
-              <span className="font-bold text-white">
-                {loading ? "..." : data?.words.hard}
-              </span>
+              {processedData?.words.byDifficulty.map(({ difficulty, count }) => (
+                <React.Fragment key={difficulty}>
+                  <span className={`text-${difficulty === 'easy' ? 'green' : difficulty === 'medium' ? 'blue' : 'red'}-500 font-semibold text-lg`}>
+                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                  </span>
+                  <span className="font-bold text-white">
+                    {loading ? "..." : count}
+                  </span>
+                </React.Fragment>
+              ))}
             </div>
           </div>
 
@@ -103,53 +99,21 @@ export const Statistics = () => {
               <h2 className="text-3xl font-semibold text-yellow-500 bottom-[4px] relative">
                 Lectures
                 <span className="text-3xl mx-4">
-                  {loading ? "..." : data?.lectures.total}
+                  {loading ? "..." : processedData?.lectures.total}
                 </span>
               </h2>
             </section>
             <div className="w-full text-white-700 text-md space-y-1">
-              <div className="flex justify-start gap-4 w-full">
-                <span className="text-blue-500 font-semibold text-lg">
-                  A1{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.A1}
+              {processedData?.lectures.byLevel.map(({ level, count }) => (
+                <div key={level} className="flex justify-start gap-4 w-full">
+                  <span className={`text-${level.startsWith('A') ? 'blue' : level.startsWith('B') ? 'green' : 'yellow'}-500 font-semibold text-lg`}>
+                    {level}{" "}
+                    <span className="font-bold text-white mx-2">
+                      {loading ? "..." : count}
+                    </span>
                   </span>
-                </span>
-                <span className="text-blue-500 font-semibold text-lg">
-                  A2{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.A2}
-                  </span>
-                </span>
-              </div>
-              <div className="flex justify-start gap-4 w-full">
-                <span className="text-green-500 font-semibold text-lg">
-                  B1{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.B1}
-                  </span>
-                </span>
-                <span className="text-green-500 font-semibold text-lg">
-                  B2{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.B2}
-                  </span>
-                </span>
-              </div>
-              <div className="flex justify-start gap-4 w-full">
-                <span className="text-yellow-400 font-semibold text-lg">
-                  C1{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.C1}
-                  </span>
-                </span>
-                <span className="text-yellow-400 font-semibold text-lg">
-                  C2{" "}
-                  <span className="font-bold text-white mx-2">
-                    {loading ? "..." : data?.lectures.C2}
-                  </span>
-                </span>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
