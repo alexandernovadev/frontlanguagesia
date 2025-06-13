@@ -5,13 +5,13 @@ import { Word } from "../../../models/Word";
 import { wordService } from "../../../services/wordService";
 
 interface SidePanelProps {
-  isVisible: boolean;
+  isVisible?: boolean;
   wordSelected: string | null;
   onClose: () => void;
 }
 
 export const SidePanelModalWord: React.FC<SidePanelProps> = ({
-  isVisible,
+  isVisible ,
   wordSelected,
   onClose,
 }) => {
